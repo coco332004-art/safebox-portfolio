@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Mi Perfil</title>
+  <link rel="stylesheet" th:href="@{/css/perfil.css}">
+</head>
+<body>
+
+<header>
+  <div><a th:href="@{/}">&larr; Inicio</a></div>
+
+  <div th:if="${currentUser != null}">
+    Sesión:
+    <strong th:text="${currentUser.nombreCompleto}">Nombre</strong>
+    (<span th:text="${currentUser.email}">email</span>)
+    — <strong th:text="${currentUser.rol}">ROL</strong>
+  </div>
+
+  <nav>
+    <a th:href="@{/perfil}" class="active">Mi perfil</a>
+    <a th:href="@{/mensajes}">Boveda de Mensajes</a>
+  </nav>
+</header>
+
+<div class="container">
+  <div th:if="${alertSuccess}" class="alert success" th:text="${alertSuccess}"></div>
+  <div th:if="${alertError}" class="alert error" th:text="${alertError}"></div>
+
+  <div class="card">
+    <h2>Editar mi perfil</h2>
+
+    <form th:action="@{/perfil}" th:object="${userForm}" method="post">
+      <input type="hidden" th:field="*{id}" />
+
+      <label>Nombre completo</label>
+      <input type="text" th:field="*{nombreCompleto}" required maxlength="120">
+      <p th:if="${#fields.hasErrors('nombreCompleto')}"
+         th:errors="*{nombreCompleto}" class="error-message"></p>
+
+      <label>Correo</label>
+      <input type="email" th:field="*{email}" required maxlength="150">
+      <p th:if="${#fields.hasErrors('email')}"
+         th:errors="*{email}" class="error-message"></p>
+
+      <label>Contraseña</label>
+      <input type="password" th:field="*{password}" minlength="6" maxlength="100">
+      <p th:if="${#fields.hasErrors('password')}"
+         th:errors="*{password}" class="error-message"></p>
+
+      <!-- ocultos -->
+      <input type="hidden" th:field="*{rol}">
+      <input type="hidden" th:field="*{enabled}">
+
+      <!-- ✅ NUEVO: bloque de acciones con separación -->
+      <div class="form-actions">
+        <button type="submit" class="btn">Guardar cambios</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+</body>
+</html>

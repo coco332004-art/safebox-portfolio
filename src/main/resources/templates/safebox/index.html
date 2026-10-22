@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SafeBox • Inicio</title>
+  <link rel="stylesheet" th:href="@{/css/index.css}">
+</head>
+
+<body>
+<header>
+  <div class="header-inner">
+    <h1>SafeBox</h1>
+
+    <nav>
+      <a th:href="@{/perfil}">Mi perfil</a>
+      <a th:href="@{/usuarios}" sec:authorize="hasRole('ADMIN')">Gestion de Usuarios</a>
+      <a th:href="@{/mensajes}">Boveda de Mensajes</a>
+      <a th:href="@{/admin}" sec:authorize="hasRole('ADMIN')">Reportes administrador</a>
+    </nav>
+  </div>
+</header>
+
+<div class="container">
+  <div class="card">
+    <h2>Bienvenido!</h2>
+
+    <div th:if="${currentUser != null}" class="session">
+      Sesión:
+      <strong th:text="${currentUser.nombreCompleto}">Nombre</strong>
+      (<span th:text="${currentUser.email}">email</span>)
+      — <strong th:text="${currentUser.rol}">ROL</strong>
+    </div>
+
+    <p class="muted">Esta version corresponde al avance final del proyecto.</p>
+
+    <!-- ✅ Lista bien estructurada y alineada -->
+    <ul class="menu">
+      <li>
+        <a th:href="@{/mensajes}">Boveda de Mensajes</a>
+      </li>
+
+      <li>
+        <a th:href="@{/perfil}">Mi Perfil</a>
+      </li>
+
+      <li sec:authorize="hasRole('ADMIN')">
+        <a th:href="@{/usuarios}">Gestion de Usuarios</a>
+      </li>
+
+      <li sec:authorize="hasRole('ADMIN')">
+        <a th:href="@{/admin}">Reportes administrador</a>
+      </li>
+    </ul>
+
+    <p class="muted">Proyecto de Byron Villalobos Sánchez</p>
+
+    <form th:action="@{/logout}" method="post" class="inline">
+      <button type="submit" class="btn">Cerrar sesión</button>
+    </form>
+  </div>
+</div>
+
+<footer>SafeBox</footer>
+</body>
+</html>

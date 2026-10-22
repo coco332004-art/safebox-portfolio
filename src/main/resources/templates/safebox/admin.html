@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>SafeBox | Panel Admin</title>
+  <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="container row">
+    <h1 class="brand">SafeBox</h1>
+    <nav class="nav">
+      <a th:href="@{/}">Inicio</a>
+      <a th:href="@{/admin/panel}" class="active">Admin</a>
+      <form th:action="@{/logout}" method="post" class="inline">
+        <button type="submit" class="btn btn-ghost">Logout</button>
+      </form>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <section class="card">
+    <h2>Visor de datos</h2>
+
+    <div class="grid">
+      <div class="stat">
+        <div class="stat-label">Total Mensajes</div>
+        <div class="stat-value" th:text="${totalMensajes}">0</div>
+      </div>
+
+      <div class="stat">
+        <div class="stat-label">Total Auditorías</div>
+        <div class="stat-value" th:text="${totalAuditorias}">0</div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <a class="btn" th:href="@{/admin/reportes/panel.pdf}">Exportar Panel a PDF</a>
+    </div>
+  </section>
+
+  <section class="card">
+    <h3>Mensajes (VaultItems)</h3>
+
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+        <tr>
+          <th style="width:70px">ID</th>
+          <th>Título</th>
+          <th>Usuario</th>
+          <th style="width:190px">Fecha</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:if="${mensajesPage == null or mensajesPage.content == null or #lists.isEmpty(mensajesPage.content)}">
+          <td colspan="4" class="muted">No hay datos</td>
+        </tr>
+
+        <tr th:each="m : ${mensajesPage.content}">
+          <td th:text="${m.id}"></td>
+          <td th:text="${m.titulo}"></td>
+          <td th:text="${m.usuario != null ? m.usuario.email : 'N/A'}"></td>
+
+          <!-- ✅ Fecha formateada -->
+          <td class="date"
+              th:text="${m.fechaCreacion != null ? #temporals.format(m.fechaCreacion, 'yyyy-MM-dd HH:mm') : '—'}">
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pager">
+      <a th:if="${mensajesPage.hasPrevious()}"
+         th:href="@{/admin/panel(msgPage=${mensajesPage.number - 1}, msgSize=${mensajesPage.size}, audPage=${auditoriasPage.number}, audSize=${auditoriasPage.size})}">
+        Anterior
+      </a>
+
+      <span th:text="${mensajesPage.number + 1}">1</span> /
+      <span th:text="${mensajesPage.totalPages}">1</span>
+
+      <a th:if="${mensajesPage.hasNext()}"
+         th:href="@{/admin/panel(msgPage=${mensajesPage.number + 1}, msgSize=${mensajesPage.size}, audPage=${auditoriasPage.number}, audSize=${auditoriasPage.size})}">
+        Siguiente
+      </a>
+    </div>
+  </section>
+
+  <section class="card">
+    <h3>Auditorías</h3>
+
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+        <tr>
+          <th style="width:190px">Fecha</th>
+          <th style="width:180px">Tipo</th>
+          <th style="width:90px">Usuario</th>
+          <th>Detalle</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:if="${auditoriasPage == null or auditoriasPage.content == null or #lists.isEmpty(auditoriasPage.content)}">
+          <td colspan="4" class="muted">No hay datos</td>
+        </tr>
+
+        <tr th:each="a : ${auditoriasPage.content}">
+          <!-- ✅ Timestamp formateado -->
+          <td class="date"
+              th:text="${a.timestamp != null ? #temporals.format(a.timestamp, 'yyyy-MM-dd HH:mm') : '—'}">
+            2025-01-01 00:00
+          </td>
+
+          <td><span class="pill" th:text="${a.tipo}">LOGIN_SUCCESS</span></td>
+          <td th:text="${a.usuarioId}">1</td>
+          <td th:text="${a.detalle}">detalle</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pager">
+      <a th:if="${auditoriasPage.hasPrevious()}"
+         th:href="@{/admin/panel(msgPage=${mensajesPage.number}, msgSize=${mensajesPage.size}, audPage=${auditoriasPage.number - 1}, audSize=${auditoriasPage.size})}">
+        Anterior
+      </a>
+
+      <span th:text="${auditoriasPage.number + 1}">1</span> /
+      <span th:text="${auditoriasPage.totalPages}">1</span>
+
+      <a th:if="${auditoriasPage.hasNext()}"
+         th:href="@{/admin/panel(msgPage=${mensajesPage.number}, msgSize=${mensajesPage.size}, audPage=${auditoriasPage.number + 1}, audSize=${auditoriasPage.size})}">
+        Siguiente
+      </a>
+    </div>
+  </section>
+
+</main>
+</body>
+</html>

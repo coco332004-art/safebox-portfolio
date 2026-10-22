@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SafeBox • Mensajes</title>
+  <link rel="stylesheet" th:href="@{/css/mensajes.css}">
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div>
+      <a th:href="@{/}">&larr; Inicio</a>
+    </div>
+
+    <div th:if="${currentUser != null}">
+      Sesión:
+      <strong th:text="${currentUser.nombreCompleto}">Nombre</strong>
+      (<span th:text="${currentUser.email}">email</span>)
+      — <strong th:text="${currentUser.rol}">ROL</strong>
+    </div>
+
+    <nav>
+      <a th:href="@{/usuarios}">Usuarios</a>
+      <a th:href="@{/mensajes}" class="active">Mensajes</a>
+    </nav>
+  </div>
+</header>
+
+<div class="container">
+  <h2>Mensajes</h2>
+
+  <!-- Alertas -->
+  <div th:if="${successMessage}" class="alert success" th:text="${successMessage}"></div>
+  <div th:if="${alertSuccess}" class="alert success" th:text="${alertSuccess}"></div>
+  <div th:if="${alertError}" class="alert error" th:text="${alertError}"></div>
+
+  <div class="row">
+
+    <!-- Formulario CRUD -->
+    <div class="card" style="min-width:320px; max-width:460px">
+      <h3 th:text="${messageForm.id != null} ? 'Editar mensaje' : 'Crear mensaje'">Crear mensaje</h3>
+
+      <form th:action="@{/mensajes}" th:object="${messageForm}" method="post">
+        <input type="hidden" th:field="*{id}"/>
+
+        <!-- Select de usuario solo si es admin -->
+        <div th:if="${usuarios != null}">
+          <label>Usuario</label>
+          <select name="usuarioId">
+            <option value="" disabled th:selected="${messageForm.usuario == null}">
+              -- Seleccionar usuario --
+            </option>
+            <option th:each="u : ${usuarios}"
+                    th:value="${u.id}"
+                    th:selected="${messageForm.usuario != null and messageForm.usuario.id == u.id}"
+                    th:text="|${u.nombreCompleto} (${u.email})|">
+            </option>
+          </select>
+        </div>
+
+        <label>Título</label>
+        <input type="text" th:field="*{titulo}" maxlength="120" required placeholder="Asunto del mensaje">
+        <div class="muted" th:if="${#fields.hasErrors('titulo')}" th:errors="*{titulo}"></div>
+
+        <label>Contenido</label>
+        <textarea th:field="*{contenido}" rows="6" required placeholder="Escribe el contenido..."></textarea>
+        <div class="muted" th:if="${#fields.hasErrors('contenido')}" th:errors="*{contenido}"></div>
+
+        <div style="display:flex; gap:10px; margin-top:14px">
+          <button class="btn" type="submit"
+                  th:text="${messageForm.id != null} ? 'Actualizar' : 'Guardar'">
+            Guardar
+          </button>
+          <a class="btn btn-secondary" th:href="@{/mensajes}">Limpiar</a>
+        </div>
+      </form>
+    </div>
+
+    <!-- Listado -->
+    <div class="card">
+
+      <!-- Filtro SOLO si hay usuarios (ADMIN) -->
+      <form th:if="${usuarios != null}"
+            method="get" th:action="@{/mensajes}"
+            style="display:flex; gap:10px; align-items:center; margin-bottom:10px">
+        <label for="usuarioId" style="margin:0">Filtrar por usuario:</label>
+
+        <select name="usuarioId" id="usuarioId" style="width:240px">
+          <option value="" th:selected="${usuarioId == null}">Todos</option>
+          <option th:each="u : ${usuarios}"
+                  th:value="${u.id}"
+                  th:selected="${usuarioId != null and usuarioId == u.id}"
+                  th:text="${u.nombreCompleto}">
+          </option>
+        </select>
+
+        <button class="btn btn-secondary" type="submit">Aplicar</button>
+        <a class="btn btn-secondary" th:href="@{/mensajes}">Limpiar</a>
+      </form>
+
+      <!-- CLAVE: wrapper para que NO se traslape -->
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+          <tr>
+            <th>ID</th>
+            <th>Usuario</th>
+            <th>Título</th>
+            <th>Contenido</th>
+            <th>Creado</th>
+            <th>Actualizado</th>
+            <th>Acciones</th>
+          </tr>
+          </thead>
+
+          <tbody>
+          <tr th:each="m : ${mensajes}">
+            <td th:text="${m.id}">1</td>
+
+            <td>
+              <span th:if="${m.usuario != null}" th:text="${m.usuario.nombreCompleto}">Usuario</span>
+              <span th:unless="${m.usuario != null}">—</span>
+            </td>
+
+            <td th:text="${m.titulo}">Título</td>
+
+            <td th:text="${esAdmin} ? '*** Contenido cifrado ***' : ${m.contenido}">Contenido</td>
+
+            <td th:text="${#temporals.format(m.fechaCreacion, 'yyyy-MM-dd HH:mm')}">2025-01-01 12:00</td>
+            <td th:text="${#temporals.format(m.fechaActualizacion, 'yyyy-MM-dd HH:mm')}">2025-01-01 12:00</td>
+
+            <td class="actions">
+              <a class="btn btn-secondary" th:href="@{/mensajes(editId=${m.id})}">Editar</a>
+
+              <form th:action="@{/mensajes/eliminar/{id}(id=${m.id})}"
+                    method="post"
+                    onsubmit="return confirm('¿Eliminar mensaje?');">
+                <button class="btn btn-danger" type="submit">Eliminar</button>
+              </form>

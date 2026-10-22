@@ -1,0 +1,5 @@
+{"properties": [{
+  "name": "safebox.master-key",
+  "type": "java.lang.String",
+  "description": "A description for 'safebox.master-key'"
+}]}

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SafeBox • Usuarios</title>
+  <link rel="stylesheet" th:href="@{/css/usuarios.css}">
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <div><a th:href="@{/}">&larr; Inicio</a></div>
+
+      <div th:if="${currentUser != null}">
+        Sesión:
+        <strong th:text="${currentUser.nombreCompleto}">Nombre</strong>
+        (<span th:text="${currentUser.email}">email</span>)
+        — <strong th:text="${currentUser.rol}">ROL</strong>
+      </div>
+
+      <nav>
+        <a th:href="@{/usuarios}" class="active">Usuarios</a>
+        <a th:href="@{/mensajes}">Mensajes</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="container">
+    <h2>Usuarios</h2>
+
+    <div th:if="${alertSuccess}" class="alert success" th:text="${alertSuccess}"></div>
+    <div th:if="${alertError}" class="alert error" th:text="${alertError}"></div>
+
+    <!-- Layout 2 columnas: Form + Listado -->
+    <div class="row">
+      <!-- Formulario -->
+      <div class="card" style="min-width:320px; max-width:420px">
+        <h3 th:text="${editMode} ? 'Editar usuario' : 'Crear usuario'">Crear / Editar usuario</h3>
+
+        <form th:action="${editMode} ? @{'/usuarios/' + ${userForm.id}} : @{/usuarios}"
+              th:object="${userForm}" method="post">
+
+          <div th:if="${editMode}">
+            <input type="hidden" th:field="*{id}" />
+          </div>
+
+          <label>Nombre completo</label>
+          <input th:field="*{nombreCompleto}" type="text" maxlength="120" placeholder="Nombre completo" required>
+          <div class="error" th:if="${#fields.hasErrors('nombreCompleto')}" th:errors="*{nombreCompleto}">Error nombre</div>
+
+          <label>Correo</label>
+          <input th:field="*{email}" type="email" maxlength="150" placeholder="correo@dominio.com" required>
+          <div class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Error email</div>
+
+          <label>Contraseña</label>
+          <input th:field="*{password}" type="password" minlength="6" maxlength="100" placeholder="********" required>
+          <div class="error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Error pass</div>
+
+          <label>Rol</label>
+          <select th:field="*{rol}">
+            <option value="USER">USER</option>
+            <option value="ADMIN">ADMIN</option>
+          </select>
+
+          <label>Activo</label>
+          <select th:field="*{enabled}">
+            <option th:value="true">Sí</option>
+            <option th:value="false">No</option>
+          </select>
+
+          <div class="btn-group">
+            <button class="btn" type="submit" th:text="${editMode} ? 'Actualizar' : 'Guardar'">Guardar</button>
+            <a class="btn btn-secondary" th:href="@{/usuarios}">Limpiar</a>
+          </div>
+        </form>
+      </div>
+
+      <!-- Listado -->
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center">
+          <h3 style="margin:0">Lista de usuarios</h3>
+        </div>
+
+        <!-- CLAVE: wrapper para que la tabla no se salga ni se traslape -->
+        <div class="table-wrap">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>Rol</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr th:each="u : ${usuarios}">
+                <td th:text="${u.id}">1</td>
+                <td th:text="${u.nombreCompleto}">Nombre</td>
+                <td th:text="${u.email}">correo</td>
+                <td><span class="badge" th:text="${u.rol}">USER</span></td>
+                <td th:text="${u.enabled} ? 'ACTIVO' : 'INACTIVO'">ACTIVO</td>
+
+                <td class="actions">
+                  <a class="btn btn-secondary" th:href="@{'/usuarios/' + ${u.id} + '/editar'}">Editar</a>
+                  <form th:action="@{'/usuarios/' + ${u.id} + '/eliminar'}" method="post" style="display:inline">
+                    <button class="btn btn-danger" type="submit" onclick="return confirm('¿Eliminar usuario?')">Eliminar</button>
+                  </form>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,43 @@
+:root { font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial, "Helvetica Neue", sans-serif; }
+
+body {
+  margin: 0;
+  background: #154144;
+  color: #e2e8f0;
+}
+
+.container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 48px 20px;
+}
+
+.alert {
+  background: #0b1220;
+  border: 1px solid #7f1d1d;
+  border-radius: 14px;
+  padding: 18px;
+}
+
+.alert-heading {
+  margin: 0 0 8px 0;
+  color: #fecaca;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #1f2937;
+  margin: 14px 0;
+}
+
+.btn {
+  display: inline-block;
+  background: #2563eb;
+  color: #fff;
+  text-decoration: none;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.btn:hover { background: #125c40; }
