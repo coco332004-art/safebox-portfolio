@@ -4,7 +4,7 @@ Aplicación web académica para administrar usuarios y una bóveda de mensajes. 
 
 ## Mi participación
 
-Desarrollé y probé el proyecto de forma individual. Utilicé ChatGPT como apoyo intensivo para aclarar conceptos, explorar soluciones y revisar código; adapté las propuestas al proyecto, configuré y ejecuté la aplicación, revisé sus pantallas y flujos, y validé el endpoint de salud con Postman.
+Desarrollé y probé el proyecto de forma individual. Utilicé IA como apoyo intensivo para aclarar conceptos, explorar soluciones y revisar código; adapté las propuestas al proyecto, configuré y ejecuté la aplicación, revisé sus pantallas y flujos, y validé el endpoint de salud con Postman.
 
 ## Funcionalidades
 
@@ -75,4 +75,4 @@ Es una demostración académica para ejecución local, no una aplicación lista 
 
 ## Autoría y uso de IA
 
-Byron Villalobos Sánchez. Proyecto académico desarrollado individualmente con asistencia de ChatGPT durante el aprendizaje, la exploración de soluciones y la revisión de código.
+Byron Villalobos Sánchez. Proyecto académico desarrollado individualmente con asistencia de IA durante el aprendizaje, la exploración de soluciones y la revisión de código.
